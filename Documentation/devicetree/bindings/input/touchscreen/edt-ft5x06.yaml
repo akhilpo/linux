@@ -52,6 +52,8 @@ properties:
 
   interrupts:
     maxItems: 1
+    description:
+      Touch interrupt. If absent, the controller is polled.
 
   reset-gpios:
     maxItems: 1
@@ -112,7 +114,6 @@ unevaluatedProperties: false
 required:
   - compatible
   - reg
-  - interrupts
 
 examples:
   - |
