@@ -1,0 +1,78 @@
+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+/*
+ * Waveshare 5inch DSI LCD Rev2.2, 800x480 (SKU 18396).
+ * WSDIA1 handles I2C control; a separate ICN6211 bridges DSI to the LCD.
+ * Model the complete assembly as a DSI panel, as in the Raspberry Pi
+ * vc4-kms-dsi-waveshare-800x480 overlay.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+
+&{/} {
+	/* Release LCD/bridge reset after enabling the controller supply. */
+	regulator-display-bridge {
+		compatible = "regulator-fixed";
+		regulator-name = "display-bridge-reset";
+		gpio = <&reg_display 0 GPIO_ACTIVE_HIGH>;
+		vin-supply = <&reg_display>;
+		enable-active-high;
+		regulator-always-on;
+	};
+};
+
+&cci {
+	status = "okay";
+};
+
+&cci_i2c0 {
+	clock-frequency = <100000>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	reg_display: regulator@45 {
+		compatible = "raspberrypi,7inch-touchscreen-panel-regulator";
+		reg = <0x45>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	touchscreen@38 {
+		compatible = "edt,edt-ft5506";
+		reg = <0x38>;
+		vcc-supply = <&reg_display>;
+		reset-gpios = <&reg_display 1 GPIO_ACTIVE_LOW>;
+		touchscreen-size-x = <800>;
+		touchscreen-size-y = <480>;
+		touchscreen-inverted-x;
+		touchscreen-inverted-y;
+	};
+};
+
+&mdss_dsi0 {
+	vdda-supply = <&pm4125_l5>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	waveshare_panel: panel@0 {
+		compatible = "waveshare,5inch-dsi-lcd";
+		reg = <0>;
+		power-supply = <&reg_display>;
+		backlight = <&reg_display>;
+
+		port {
+			waveshare_panel_in: endpoint {
+				remote-endpoint = <&mdss_dsi0_out>;
+			};
+		};
+	};
+};
+
+&mdss_dsi0_out {
+	remote-endpoint = <&waveshare_panel_in>;
+	data-lanes = <0>;
+};
