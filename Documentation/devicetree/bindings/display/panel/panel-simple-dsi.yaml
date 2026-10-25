@@ -61,6 +61,8 @@ properties:
       - samsung,s6e3fa7-ams559nk06
         # Shangai Top Display Optoelectronics 7" TL070WSH30 1024x600 TFT LCD panel
       - tdo,tl070wsh30
+        # Waveshare 5" WVGA (800x480) DSI LCD assembly with ICN6211 bridge
+      - waveshare,5inch-dsi-lcd
 
   reg:
     maxItems: 1
