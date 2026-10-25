@@ -5834,6 +5834,36 @@ static const struct panel_desc_dsi osd101t2045_53ts = {
 	.lanes = 4,
 };
 
+/* Timings from the Raspberry Pi vc4-kms-dsi-waveshare-800x480 overlay. */
+static const struct drm_display_mode waveshare_5inch_dsi_mode = {
+	.clock = 27777,
+	.hdisplay = 800,
+	.hsync_start = 800 + 59,
+	.hsync_end = 800 + 59 + 2,
+	.htotal = 800 + 59 + 2 + 45,
+	.vdisplay = 480,
+	.vsync_start = 480 + 7,
+	.vsync_end = 480 + 7 + 2,
+	.vtotal = 480 + 7 + 2 + 22,
+};
+
+/* The assembly includes an ICN6211 bridge and WSDIA1 I2C control. */
+static const struct panel_desc_dsi waveshare_5inch_dsi = {
+	.desc = {
+		.modes = &waveshare_5inch_dsi_mode,
+		.num_modes = 1,
+		.bpc = 8,
+		.size = {
+			.width = 109,
+			.height = 65,
+		},
+		.connector_type = DRM_MODE_CONNECTOR_DSI,
+	},
+	.flags = MIPI_DSI_MODE_VIDEO,
+	.format = MIPI_DSI_FMT_RGB888,
+	.lanes = 1,
+};
+
 static const struct of_device_id dsi_of_match[] = {
 	{
 		.compatible = "auo,b080uan01",
@@ -5853,6 +5883,9 @@ static const struct of_device_id dsi_of_match[] = {
 	}, {
 		.compatible = "osddisplays,osd101t2045-53ts",
 		.data = &osd101t2045_53ts
+	}, {
+		.compatible = "waveshare,5inch-dsi-lcd",
+		.data = &waveshare_5inch_dsi,
 	}, {
 		/* sentinel */
 	}
