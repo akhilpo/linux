@@ -11,6 +11,7 @@ ARM64 Architecture
     amu
     arm-acpi
     arm-cca
+    arduino-uno-q-waveshare
     asymmetric-32bit
     booting
     cpu-feature-registers
